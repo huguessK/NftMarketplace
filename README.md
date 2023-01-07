@@ -1,6 +1,7 @@
 # This is my first web3 project whose goal is to develop a nft marketplace, a simplified version of OpenSea or Magic Eden.
 
 #### The project will be developed on the Internet Computer blockchain network, using the Motoko programming language.
+###### The front part will be done with React
 
 It will be possible to :
 - connect to the marketplace using Internet Identity
@@ -10,5 +11,8 @@ It will be possible to :
 
 I will create a crytpo __token (HuKou--HK)__ that will be used to trade nfts.
 Each wallet will be able to claim 10,000 HK to be able to trade on the marketplace.
+
+_I'll make some 'git push' as I go along on the project. 
+So don't hesitate to come from time to time to see my progress.
 
 
