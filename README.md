@@ -13,6 +13,6 @@ I will create a crytpo __token (HuKou--HK)__ that will be used to trade nfts.
 Each wallet will be able to claim 10,000 HK to be able to trade on the marketplace.
 
 _I'll make some 'git push' as I go along on the project. 
-So don't hesitate to come from time to time to see my progress.
+So don't hesitate to come from time to time to see my progress._
 
 
