@@ -1,6 +1,6 @@
-# This is my first web3 project whose goal is to develop a nft marketplace, a simplified version of **OpenSea or **Magic Eden.
+# This is my first web3 project whose goal is to develop a nft marketplace, a simplified version of OpenSea or Magic Eden.
 
-## The project will be developed on the Internet Computer blockchain network, using the Motoko programming language.
+#### The project will be developed on the Internet Computer blockchain network, using the Motoko programming language.
 
 It will be possible to :
 - connect to the marketplace using Internet Identity
