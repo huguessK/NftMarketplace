@@ -19,3 +19,6 @@ dist/
 
 #.env 
 .env
+
+#package.json
+package.json

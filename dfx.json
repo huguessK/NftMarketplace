@@ -14,7 +14,7 @@
     },
     "nftmarketplace_frontend": {
       "dependencies": [
-        "nftmarketplace_backend"
+        "nftmarketplace_backend", "nft_backend", "token_backend"
       ],
       "frontend": {
         "entrypoint": "src/nftmarketplace_frontend/src/index.html"
