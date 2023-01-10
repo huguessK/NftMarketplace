@@ -20,5 +20,5 @@ dist/
 #.env 
 .env
 
-#package.json
-package.json
+#package-lock.json
+package-lock.json
