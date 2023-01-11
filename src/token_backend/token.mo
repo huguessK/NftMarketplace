@@ -3,7 +3,7 @@ import Float "mo:base/Float";
 import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Iter "mo:base/Iter";
-import Debug "mo:base/Debug" //Debug.print(debug_show(varToshow))
+import Debug "mo:base/Debug"; //Debug.print(debug_show(varToshow))
 
 actor Token{
 
