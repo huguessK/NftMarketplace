@@ -14,12 +14,20 @@ stable var PriceHistoryEntries : [Float] = []; //useful to make PriceHistory sta
 stable var currentPrice : Float = 0;
 
 
-public query func GetName() : async Text{
-    return name;
+
+public query func GetName(nftId: Principal) : async Text{
+    if(Principal.fromActor(this)==nftId){
+        return name;}
+    else {
+        return "";}
 };
 
-public query func GetDatas() : async [Nat8]{
-    return datas;
+public query func GetDatas(nftId: Principal) : async [Nat8]{
+    if(Principal.fromActor(this)==nftId){
+        return datas;}
+    else {
+        return [];}
+    
 };
 
 public query func GetID() : async Principal {
@@ -59,3 +67,8 @@ system func preupgrade() {
 
 
 }//end actor class NFT
+
+
+
+
+

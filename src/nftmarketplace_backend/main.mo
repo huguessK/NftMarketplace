@@ -12,34 +12,47 @@ actor HuguesK{
 
 //to store nfts owned by each wallet
 //Principal -> Owner Principal ID
-//Buffer.Buffer<NFTActor.NFT> -> each nft owned 
+//Buffer.Buffer<Principal> -> to store each nft owned principal
 
-var NftOwners= HashMap.HashMap<Principal, Buffer.Buffer<NFTActor.NFT>>(1, Principal.equal, Principal.hash);
-var NftsToSell= Buffer.Buffer<NFTActor.NFT>(0); //empty buffer
+var NftOwners= HashMap.HashMap<Principal, Buffer.Buffer<Principal>>(1, Principal.equal, Principal.hash);
+var NftsToSell= Buffer.Buffer<Principal>(0); //empty buffer
 
 ////to make NftOwners and NftsToSell stable
-stable var NftsToSellEntries : [NFTActor.NFT] = [];
-stable var NftOwnersEntries : List.List<(Principal,List.List<NFTActor.NFT>)> = List.nil<(Principal,List.List<NFTActor.NFT>)>();//empty List
+stable var NftsToSellEntries : [Principal] = [];
+stable var NftOwnersEntries : List.List<(Principal,List.List<Principal>)> = List.nil<(Principal,List.List<Principal>)>();//empty List
 
 
 public shared(msg) func mint(name: Text, datas: [Nat8]) : async () {
     let owner : Principal = msg.caller;
+    Debug.print(debug_show(owner));
 
     Debug.print(debug_show(Cycles.balance()));
     //add experimental cycles in order to be able to mint new nft -- locally
-    Cycles.add(200_000_000_000);
+    Cycles.add(500_000_000_000);
     let nft = await NFTActor.NFT(name, datas);
     Debug.print(debug_show(Cycles.balance()));
 
+
+    /*await nft.SetCurrentPrice(56);
+    Debug.print(debug_show(await nft.GetCurrentPrice())); */
+
     //update NftOwners 
-    let buffer =  Buffer.Buffer<NFTActor.NFT>(0);
-    buffer.add(nft);
-    NftOwners.put(owner, buffer);
+    let buffer =  Buffer.Buffer<Principal>(0);
+    buffer.add(await nft.GetID());
+
+    switch (NftOwners.get(owner)) {
+            case null {NftOwners.put(owner, buffer);};
+            case (?result) {
+                for (mynftID in result.vals()){buffer.add(mynftID);};
+                NftOwners.put(owner, buffer);};
+            };
+    
     };
 
 
 
-public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, buyer : Principal ) : async(){
+//return the purchase price of nft
+public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, buyer : Principal ) : async Float{
     //Remove ownership from the seller
     switch (NftOwners.get(seller)) 
         {
@@ -47,22 +60,20 @@ public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, 
                 case (?result) 
                 {
                     //remove the NFT from the seller's wallet
-                    var newBuffer = Buffer.Buffer<NFTActor.NFT>(0);
-                    var buyernftsBuffer = Buffer.Buffer<NFTActor.NFT>(0);
-                    for (nft in result.vals())
+                    var newBuffer = Buffer.Buffer<Principal>(0);
+                    var buyernftsBuffer = Buffer.Buffer<Principal>(0);
+                    for (nftID in result.vals())
                     {
-                        let nftID : Principal = await nft.GetID();
-                        if( nftID != nftPrincipal){newBuffer.add(nft);}
+                        if( nftID != nftPrincipal){newBuffer.add(nftID);}
                         else{ 
                             //transfer ownership to the buyer
-                            buyernftsBuffer.add(nft);
-                            await nft.UpdatePriceHistory(price);
+                            buyernftsBuffer.add(nftID);
                             switch (NftOwners.get(buyer)) {
                                 case null {}; //should never happen
                                 case (?buyernfts){
                                     
-                                    for (val in buyernfts.vals()){
-                                        buyernftsBuffer.add(val);
+                                    for (nftprincipal in buyernfts.vals()){
+                                        buyernftsBuffer.add(nftprincipal);
                                     };
                                     //Insert the value v at key k. Overwrites an existing entry with key k
                                     NftOwners.put(buyer, buyernftsBuffer);
@@ -74,15 +85,21 @@ public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, 
                 NftOwners.put(seller, newBuffer);
              };
         };
+    return price; //in order to Update nft price history
 };
 
 
-public query func getOwnedNfts (owner : Principal) : async [NFTActor.NFT] {
+
+public query func getOwnedNfts (owner : Principal) : async [Principal] {
+    
     switch (NftOwners.get(owner)) {
             case null {
-                return []; //empty buffer
+                return []; //empty array
             };
-            case (?result) {return  Buffer.toArray(result)};
+            case (?result) {           
+                //Debug.print(debug_show(name));
+                return  Buffer.toArray(result);
+            };
             };
 };
 
@@ -95,11 +112,10 @@ public func nftTosell(owner : Principal, nftPrincipal : Principal) : async (){
             case (?result) 
             {
                 //nft search
-                label myforloop for (nft in result.vals())
+                label myforloop for (nftID in result.vals())
                     {
-                        let nftID : Principal = await nft.GetID();
                         if( nftID == nftPrincipal){
-                            NftsToSell.add(nft);
+                            NftsToSell.add(nftID);
                             break myforloop;
                         }
                     };
@@ -108,14 +124,14 @@ public func nftTosell(owner : Principal, nftPrincipal : Principal) : async (){
 };
 
 //if the seller cancels the sale of an nft then this nft is removed from the Buffer(NftsToSell)
+//nftPrincipal -> the nft concerned
 public func cancelSale(nftPrincipal : Principal) : async (){
      
-    var newBuffer = Buffer.Buffer<NFTActor.NFT>(0);
-    label myforloop for (nft in NftsToSell.vals())
+    var newBuffer = Buffer.Buffer<Principal>(0);
+    label myforloop for (nftID in NftsToSell.vals())
     {
-        let nftID : Principal = await nft.GetID();
         if( nftID != nftPrincipal){
-            newBuffer.add(nft);
+            newBuffer.add(nftID);
         }
 
     };
@@ -135,9 +151,9 @@ system func preupgrade() {
 
 
     for (val in NftOwners.entries()){
-        let valPair : (Principal,Buffer.Buffer<NFTActor.NFT>) = val;
-        let bufferToList : List.List<NFTActor.NFT> = List.fromArray(Buffer.toArray(valPair.1));
-        let valArray : (Principal, List.List<NFTActor.NFT>) = (valPair.0, bufferToList);
+        let valPair : (Principal,Buffer.Buffer<Principal>) = val;
+        let bufferToList : List.List<Principal> = List.fromArray(Buffer.toArray(valPair.1));
+        let valArray : (Principal, List.List<Principal>) = (valPair.0, bufferToList);
         NftOwnersEntries := List.push(valArray, NftOwnersEntries);
     };
   };
@@ -145,28 +161,33 @@ system func preupgrade() {
   system func postupgrade() {
 
 
-     NftsToSell := Buffer.Buffer<NFTActor.NFT>(0);
-     for ( nft in NftsToSellEntries.vals()){
-        NftsToSell.add(nft);
+     NftsToSell := Buffer.Buffer<Principal>(0);
+     for ( nftID in NftsToSellEntries.vals()){
+        NftsToSell.add(nftID);
      };
 
 
 
-     NftOwners := HashMap.HashMap<Principal, Buffer.Buffer<NFTActor.NFT>>(1, Principal.equal, Principal.hash);
+     NftOwners := HashMap.HashMap<Principal, Buffer.Buffer<Principal>>(1, Principal.equal, Principal.hash);
       for (val in  List.toIter(NftOwnersEntries)){
-        let valPair : (Principal, List.List<NFTActor.NFT>) = val;
+        let valPair : (Principal, List.List<Principal>) = val;
 
         //create a newBuffer and fill it as List.toBuffer method dosen't exist
-        var newBuffer = Buffer.Buffer<NFTActor.NFT>(0); 
-        for (nft in List.toIter(valPair.1)){
-            newBuffer.add(nft);
+        var newBuffer = Buffer.Buffer<Principal>(0); 
+        for (nftID in List.toIter(valPair.1)){
+            newBuffer.add(nftID);
         };
 
-        let valHashmap : (Principal, Buffer.Buffer<NFTActor.NFT>) = (valPair.0, newBuffer);
+        let valHashmap : (Principal, Buffer.Buffer<Principal>) = (valPair.0, newBuffer);
         NftOwners.put(valHashmap.0, valHashmap.1);
     };
 
   };
+
+
+public query func text( t : Text) : async Text{
+    return t;
+};
 
 }; //end actor HuguesK
 
