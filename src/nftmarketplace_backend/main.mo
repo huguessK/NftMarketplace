@@ -6,9 +6,13 @@ import HashMap "mo:base/HashMap";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import List "mo:base/List";
+import Bool "mo:base/Bool";
 
 
 actor HuguesK{
+
+
+stable var FreeMintCounter  : Nat8 = 0;
 
 //to store nfts owned by each wallet
 //Principal -> Owner Principal ID
@@ -22,7 +26,7 @@ stable var NftsToSellEntries : [Principal] = [];
 stable var NftOwnersEntries : List.List<(Principal,List.List<Principal>)> = List.nil<(Principal,List.List<Principal>)>();//empty List
 
 
-public shared(msg) func mint(name: Text, datas: [Nat8]) : async () {
+public shared(msg) func mint(name: Text, datas: [Nat8], freemint : Bool) : async () {
     let owner : Principal = msg.caller;
     Debug.print(debug_show(owner));
 
@@ -31,7 +35,7 @@ public shared(msg) func mint(name: Text, datas: [Nat8]) : async () {
     Cycles.add(500_000_000_000);
     let nft = await NFTActor.NFT(name, datas);
     Debug.print(debug_show(Cycles.balance()));
-
+     Debug.print(debug_show(name));
 
     /*await nft.SetCurrentPrice(56);
     Debug.print(debug_show(await nft.GetCurrentPrice())); */
@@ -46,9 +50,16 @@ public shared(msg) func mint(name: Text, datas: [Nat8]) : async () {
                 for (mynftID in result.vals()){buffer.add(mynftID);};
                 NftOwners.put(owner, buffer);};
             };
+    if(freemint){
+        FreeMintCounter +=1;
+    };
     
     };
 
+
+public query func FreeMintCount() : async Nat8 {
+    return FreeMintCounter+1;
+};
 
 
 //return the purchase price of nft
@@ -140,6 +151,9 @@ public func cancelSale(nftPrincipal : Principal) : async (){
     NftsToSell :=newBuffer;
 
 };
+
+
+
 
 
 ////to make NftOwners and NftsToSell stable

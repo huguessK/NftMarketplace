@@ -39,6 +39,7 @@
   "dependencies": {
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "5.0.0",
     "@dfinity/auth-client": "^0.15.1",
     "@dfinity/authentication": "^0.14.2",

@@ -16,17 +16,11 @@ stable var currentPrice : Float = 0;
 
 
 public query func GetName(nftId: Principal) : async Text{
-    if(Principal.fromActor(this)==nftId){
-        return name;}
-    else {
-        return "";}
+        return name;
 };
 
 public query func GetDatas(nftId: Principal) : async [Nat8]{
-    if(Principal.fromActor(this)==nftId){
-        return datas;}
-    else {
-        return [];}
+        return datas;
     
 };
 
