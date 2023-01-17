@@ -1,0 +1,19 @@
+body{
+    background-color: grey !important; /* choose another color */
+}
+
+.footer{
+    background-color: yellow; /* choose another color */
+}
+
+
+.flex-container {
+    display: flex;  /* delete at the end of the project */
+    border: 1px solid;
+  }
+  
+  .flex-container > div {
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid;
+  }

@@ -10,6 +10,7 @@ import {idlFactory} from "../../../declarations/nftmarketplace_backend";
 import {nftmarketplace_backend} from "../../../declarations/nftmarketplace_backend";
 import NftsGallery from "./NftsGallery";
 
+import {token_backend} from "../../../declarations/token_backend";
 
 
 
@@ -42,11 +43,43 @@ const freenft =
 68, 174, 66, 96, 130];
 
 
+
+
+
+
 function WalletBody (){
     const [image, SetImage]=useState();
     const [mynft, SetMyNFT]=useState();
     const [nftName, SetNftName]=useState("");
     const [displayNft, setDisplayNft]=useState(false);
+    const [mintcompleted,SetMintCompleted]=useState(true);
+    const [isminting, SetIsMinting]=useState(true);
+    const [balance, SetBalance]=useState("loading...");
+    const [response, SetResponse]=useState(true);
+    const [message, SetMessage]=useState("");
+
+    async function Claim(){
+        const rep =  await token_backend.Claim("2vxsx-fae");
+        if(rep!="SuccessfulTransaction"){
+            SetResponse(false);
+            SetMessage(rep);
+        }
+        else{
+            window.location.href="/wallet";
+        }
+    }
+
+
+    useEffect(()=>{
+     
+        async function getBalance(walletId){
+            const balance = await token_backend.Mybalance("2vxsx-fae");
+            SetBalance(balance);
+        }
+        getBalance("2vxsx-fae");
+    },[]);
+
+
 
 
    function handleSubmit (e)  { 
@@ -59,7 +92,7 @@ function WalletBody (){
             SetMyNFT(imageVectNat8);
 
             //console.log(imageVectNat8);
-            setDisplayNft(true);
+            
         }
         processing();
         e.preventDefault();
@@ -70,15 +103,21 @@ function WalletBody (){
 
 
     async function Mint(nft_name, nftDatasNat8, freemint){
+        setDisplayNft(true);
+        SetIsMinting(false);
         if(!freemint){
         await nftmarketplace_backend.mint(nft_name,nftDatasNat8, freemint);
-        alert("own nft --mint");
+        //alert("own nft --mint");
         }
         else{
             let FreeMintCounter = await nftmarketplace_backend.FreeMintCount();
             await nftmarketplace_backend.mint("FreeNft #"+(FreeMintCounter),nftDatasNat8, freemint);
-            alert("free nft --mint");
+            //alert("free nft --mint");
         }
+        
+        SetIsMinting(true);
+        SetMintCompleted(false);
+        
     }
 
 
@@ -109,12 +148,34 @@ function WalletBody (){
         </form>
         </div>
 
+      
+                <div hidden = {isminting}>
+                    Your nft is being mint...
+                </div>
+
+                <div hidden = {mintcompleted}>
+                    <h6>Mint done</h6>
+                    <a href="/viewnfts">View your nfts</a>
+                </div>
+        
+        <div>
+            <h1>Solde</h1>
+            <p>
+                Wallet Id {"2vxsx-fae"} {/*will be detected automatically with the integration of autenthification -- internet identity */}
+            </p>
+
+            <p>Balance = {balance} HK</p>
+        </div>
+
+        <div>
+            <h1>Claim free tokens, amount 10,000 HK</h1>
+            <button onClick={()=>Claim()}>Claim</button>
+            <p hidden={response}>{message}</p>
+        </div>
         </>  
         
     )
 }
-
-
 
 
 

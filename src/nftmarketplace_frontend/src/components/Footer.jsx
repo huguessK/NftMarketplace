@@ -1,12 +1,17 @@
 import React, {useState, useEffect} from "react";
-
+import "../../assets/index.css";
 
 
 
 
 function Footer(){
     return (
-        <h1>This is your footer, Styles + useful links to add</h1>
+        <footer className="footer">
+            <div>
+                <p>HuguesK @ Web3 project @ Blockchain</p>
+            </div>
+        </footer>
+        
     )
 }
 

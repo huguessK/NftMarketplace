@@ -4,6 +4,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 
+
 import {Principal} from "@dfinity/principal";
 
 import {idlFactory} from "../../../declarations/nftmarketplace_backend";
@@ -23,6 +24,7 @@ function NFTS(){
  
 
     async function fe(){
+
         const nftsOwnedIdsArray=await nftmarketplace_backend.getOwnedNfts(Principal.fromText("2vxsx-fae"));
         //console.log(nftsOwnedIdsArray);
         const newOwnedIdArray=[];
@@ -54,7 +56,7 @@ return (
             <div>
                 <Header/>
                 <h1>Your nfts</h1>
-                <NftsGallery id={walletId} nftsOwnedIds={mynftIds}/>
+                <NftsGallery id={walletId} nftsOwnedIds={mynftIds} Discover={"0"}  buy={"0"} sell={"1"}/>
                 <Footer/>
             </div>
         

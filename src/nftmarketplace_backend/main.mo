@@ -114,6 +114,15 @@ public query func getOwnedNfts (owner : Principal) : async [Principal] {
             };
 };
 
+
+public query func onSale() : async [Principal] {
+    
+    return  Buffer.toArray(NftsToSell);
+};
+
+
+
+
 //if a wallet decide to sell a nft
 
 public func nftTosell(owner : Principal, nftPrincipal : Principal) : async (){
@@ -122,16 +131,10 @@ public func nftTosell(owner : Principal, nftPrincipal : Principal) : async (){
             case null {};
             case (?result) 
             {
-                //nft search
-                label myforloop for (nftID in result.vals())
-                    {
-                        if( nftID == nftPrincipal){
-                            NftsToSell.add(nftID);
-                            break myforloop;
-                        }
-                    };
-            };
-    };
+                    NftsToSell.add(nftPrincipal);  
+        };
+     };
+     Debug.print(debug_show("Nft placed on sale"));
 };
 
 //if the seller cancels the sale of an nft then this nft is removed from the Buffer(NftsToSell)
@@ -174,11 +177,11 @@ system func preupgrade() {
 
   system func postupgrade() {
 
-
-     NftsToSell := Buffer.Buffer<Principal>(0);
+     var array = Buffer.Buffer<Principal>(0);
      for ( nftID in NftsToSellEntries.vals()){
-        NftsToSell.add(nftID);
+        array.add(nftID);
      };
+    NftsToSell := array;
 
 
 
@@ -199,9 +202,7 @@ system func preupgrade() {
   };
 
 
-public query func text( t : Text) : async Text{
-    return t;
-};
+
 
 }; //end actor HuguesK
 

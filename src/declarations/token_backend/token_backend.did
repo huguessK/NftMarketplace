@@ -1,0 +1,6 @@
+service : {
+  Claim: (text) -> (text);
+  Mybalance: (text) -> (float64);
+  Transfer: (text, text, float64) -> (text);
+  UpdateBalance: (text, float64) -> ();
+}

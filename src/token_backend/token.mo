@@ -35,7 +35,7 @@ public shared(msg) func Mybalance(id : Text) : async Float{
     {
             switch (balances.get(principal)) {
             case null {
-                return -1;
+                return 0;
             };
             case (?mybalance) {return  mybalance};
             }

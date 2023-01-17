@@ -1,0 +1,9 @@
+service : {
+  BuyNft: (principal, float64, principal, principal) -> (float64);
+  FreeMintCount: () -> (nat8) query;
+  cancelSale: (principal) -> ();
+  getOwnedNfts: (principal) -> (vec principal) query;
+  mint: (text, vec nat8, bool) -> ();
+  nftTosell: (principal, principal) -> ();
+  onSale: () -> (vec principal) query;
+}
