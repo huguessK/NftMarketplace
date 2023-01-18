@@ -5,7 +5,7 @@ export const idlFactory = ({ IDL }) => {
     'GetID' : IDL.Func([], [IDL.Principal], ['query']),
     'GetName' : IDL.Func([IDL.Principal], [IDL.Text], ['query']),
     'PriceHistoryArray' : IDL.Func([], [IDL.Vec(IDL.Float64)], []),
-    'SetCurrentPrice' : IDL.Func([IDL.Float64], [], []),
+    'SetCurrentPrice' : IDL.Func([IDL.Float64], [], ['oneway']),
     'UpdatePriceHistory' : IDL.Func([IDL.Float64], [], []),
   });
   return NFT;

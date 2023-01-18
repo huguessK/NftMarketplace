@@ -77,6 +77,7 @@ public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, 
                     {
                         if( nftID != nftPrincipal){newBuffer.add(nftID);}
                         else{ 
+                            await cancelSale(nftID);
                             //transfer ownership to the buyer
                             buyernftsBuffer.add(nftID);
                             switch (NftOwners.get(buyer)) {

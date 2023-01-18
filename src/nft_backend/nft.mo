@@ -1,6 +1,6 @@
 import Principal "mo:base/Principal";
 import Buffer "mo:base/Buffer";
-
+import Debug "mo:base/Debug"; //Debug.print(debug_show(varToshow))
 
 actor class NFT(name: Text, datas: [Nat8])=this{
 
@@ -29,19 +29,25 @@ public query func GetID() : async Principal {
 };
 
 
-public func UpdatePriceHistory (soldPrice : Float) : async (){
+public func UpdatePriceHistory(soldPrice : Float) : async (){
+Debug.print(debug_show("updatepricehistory"));
+ Debug.print(debug_show(soldPrice));
 PriceHistory.add(soldPrice);
 };
 
-public func PriceHistoryArray () : async [Float] {
+public func PriceHistoryArray() : async [Float] {
+    Debug.print(debug_show("PriceHistoryArray"));
     return Buffer.toArray(PriceHistory);
 };
 
-public func SetCurrentPrice( price: Float) : async () {
+public func SetCurrentPrice( price: Float){
+ Debug.print(debug_show("setcurrentprice"));
+ Debug.print(debug_show(price));
  currentPrice := price;
 };
 
-public query func GetCurrentPrice () : async Float {
+public query func GetCurrentPrice() : async Float {
+     Debug.print(debug_show("Getcurrentprice"));
     return currentPrice;
 };
 

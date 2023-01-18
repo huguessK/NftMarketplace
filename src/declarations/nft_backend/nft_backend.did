@@ -5,7 +5,7 @@ type NFT =
    GetID: () -> (principal) query;
    GetName: (principal) -> (text) query;
    PriceHistoryArray: () -> (vec float64);
-   SetCurrentPrice: (float64) -> ();
+   SetCurrentPrice: (float64) -> () oneway;
    UpdatePriceHistory: (float64) -> ();
  };
 service : (text, vec nat8) -> NFT

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useLayoutEffect } from "react";
 
 import {Principal} from "@dfinity/principal";
 import {Actor, HttpAgent} from "@dfinity/agent";
@@ -9,16 +9,30 @@ import {nft_backend} from "../../../declarations/nft_backend";
 import {token_backend} from "../../../declarations/token_backend";
 import {nftmarketplace_backend} from "../../../declarations/nftmarketplace_backend";
 
+import Chart from "./Chart";
 
 let nftsOwnedIdsArray=[];
 let walletId="";
+
+
 
 
 const ShowGallery=(props)=>{
     const [alldatas, SetAllDatas]=useState();
     const [NftsOnsale, SetNftOnsale]=useState();
     const datas =[];
-    
+
+    const [pricesArray, SetP] = useState();
+    const promises = props.currentprices; //the selling price of nfts on the marketplae
+
+    useEffect(()=>{
+   
+      Promise.all(promises).then((values) => {
+        SetP(values.reverse());
+        //console.log("pricearray",pricesArray);
+      });
+    },[promises]);
+
     
 
     useEffect(()=>{
@@ -34,6 +48,8 @@ const ShowGallery=(props)=>{
     console.log("onsales",NftsOnsale);
     },[]);
 
+
+    
 
     useEffect(()=>{
      
@@ -75,60 +91,204 @@ const ShowGallery=(props)=>{
      NftsOwned();
      },[]);
  
- 
+     
+    
+
      if (alldatas === undefined) {
          return <>loading...</>;
      }
  
  
+
      return(
          alldatas.map((NftDatas,index)=>{
-             //const mynfts=[]
              const nft_datas = new Uint8Array(NftDatas.im);
              const nft_image = URL.createObjectURL(new Blob([nft_datas.buffer], {type : "image/png"}));
              const name = NftDatas.name;
              const principal = NftDatas.principal;
-             /*mynfts.push({
-                id : index,
-                name : name,
-                im : nft_image
-             })*/
-
-
-
-         if(!(NftsOnsale.includes(principal))){
-         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy={props.buy} sell={props.sell}/>);
+            
+             const currentprice=pricesArray[index]; 
+             console.log("currentprice",currentprice);
+       
+        
+         if(!(NftsOnsale.includes(principal)) && props.Discover==="0"){
+         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy={props.buy} sell={props.sell} price="NULL"/>);
          }
-         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="2" sell={props.sell}/>);
- 
+
+         else if((NftsOnsale.includes(principal)) && props.Discover==="0"){
+         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="2" sell={props.sell} price="NULL"/>);
+         }
+         else{
+         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="1" sell={props.sell} price={currentprice}/>);
+         }
+        
      })
  );
-  
-         
+       
  }
 
+ 
 
 
  function NFTImage(props){
-    const [price, SetPrice]=useState();
+    const [price, SetPrice]=useState(0);
+
+    const [hidd, SetHidd]=useState(true);
+    const [chart, SetChart]=useState(true);
+    const [chartDatas, setChartDatas]=useState([]);
+
+    function runUpdateprice(){
+      
+   
+        async function updateprice(){
+            let nftPrincipal = Principal.fromText(props.principal);
+            const localHost = "http://localhost:8080/";
+            //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
+            //const id = Principal.fromText(principalID); 
+            const agent = new HttpAgent ({host: localHost});
+           
+            const NFTActor = await Actor.createActor(idlFactory,{
+                agent,
+                canisterId: nftPrincipal,
+            });
+        
+         let x = document.getElementById("sell");
+         let myprice = x.value; 
+
+         NFTActor.SetCurrentPrice(parseFloat(myprice));
+         await NFTActor.UpdatePriceHistory(parseFloat(myprice)); //line to remove
+        }
+
+        updateprice();
+    }
+    
+
 
 function CancelSale(){
     async function functionTorun(){
         await nftmarketplace_backend.cancelSale(Principal.fromText(props.principal));
-        alert("sale cancelled");
+        //alert("sale cancelled");
+        window.location.href="/viewnfts";
     }
     functionTorun();
+    
 }
 
-    function handleSubmit (e)  { 
-       
+
+function history(){
+   
+    
+    async function functionTorun(){
+        let nftPrincipal = Principal.fromText(props.principal);
+            const localHost = "http://localhost:8080/";
+             //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
+             //const id = Principal.fromText(principalID); 
+             const agent = new HttpAgent ({host: localHost});
+             agent.fetchRootKey();
+             const NFTActor = await Actor.createActor(idlFactory,{
+                 agent,
+                 canisterId: nftPrincipal,
+             });
+        let pricehistory = await NFTActor.PriceHistoryArray();
+        //alert(pricehistory);
+        setChartDatas(pricehistory);
+        /*console.log("chartDatas",chartDatas);
+        console.log("pricehistory",pricehistory);*/
+    }
+    functionTorun();
+   
+    SetChart(!chart); //toggle the chart display state
+}
+
+
+
+function BuyNFT(){
+    async function Buy(){
+        //Change Html inner text : Buy -> Processing
+        let innerText = document.getElementById("processing");
+        innerText.innerHTML="Processing...";
+
+
+        let seller_id_text = "2vxsx-fae";
+        let buyer_id_text = "2vxsx-fae";
+
+        let seller = Principal.fromText("2vxsx-fae");
+        let buyer = Principal.fromText("2vxsx-fae");
+
+        let nftPrincipal = Principal.fromText(props.principal);
+            const localHost = "http://localhost:8080/";
+             //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
+             //const id = Principal.fromText(principalID); 
+             const agent = new HttpAgent ({host: localHost});
+             const NFTActor = await Actor.createActor(idlFactory,{
+                 agent,
+                 canisterId: nftPrincipal,
+             });
+
+             let nftprice = await NFTActor.GetCurrentPrice();
+             //alert("nft price" + " " + (nftprice));
+
+             let balance = await token_backend.Mybalance(buyer_id_text);
+             if(balance>=nftprice)
+             {
+                let val= await nftmarketplace_backend.BuyNft(Principal.fromText(props.principal),nftprice,seller,buyer);
+
+                //note : balance will not change as seller_id_text=buyer_id_text and nftprice-nftprice=0
+                await token_backend.UpdateBalance(seller_id_text, nftprice);
+                await token_backend.UpdateBalance(buyer_id_text, -nftprice);
+                
+                const agent = new HttpAgent ({host: localHost});
+                agent.fetchRootKey();
+                const NFTActor = await Actor.createActor(idlFactory,{
+                    agent,
+                    canisterId: nftPrincipal,
+                });
+                await NFTActor.UpdatePriceHistory(nftprice);
+                //alert("nft bought");
+                //Change Html inner text : Processing -> Success
+                innerText.innerHTML="Success";
+
+                const delay = millis => new Promise((resolve, reject) => {
+                    setTimeout(_ => resolve(), millis)
+                  });
+
+                await delay(1000);
+
+                window.location.href="/viewnfts";
+             }
+
+             else{
+                innerText.innerHTML="Failed";
+                const delay = millis => new Promise((resolve, reject) => {
+                    setTimeout(_ => resolve(), millis)
+                  });
+
+                await delay(1000);
+                innerText.innerHTML="Buy";
+             }
+    }
+    //Note : if buyer=seller then after buying, nft is totally lost -> not transfer to buyer...This is normal
+    Buy();
+}
+
+
+
+    function handleSubmit(e)  { 
+        SetPrice(price);
         async function sell(){
-            await nftmarketplace_backend.nftTosell(Principal.fromText("2vxsx-fae"), Principal.fromText(props.principal));
+            let nftPrincipal = Principal.fromText(props.principal);
+            //alert(props.principal);
+            await nftmarketplace_backend.nftTosell(Principal.fromText("2vxsx-fae"), nftPrincipal);
             NftsOnsale.push(props.principal);
+            //alert("nft on sale");
+            
         }
+        
         sell(); 
+        runUpdateprice();
+        
         //e.preventDefault();
-        alert("nft on sale");
+        
     }
 
 
@@ -139,12 +299,24 @@ function CancelSale(){
                     <h6>{props.name}</h6>
              {       
                 (props.buy==="0")?
-                    (<form onSubmit={handleSubmit}>
-                        <label for="sell">Enter your price</label>
-                        <input type="text" name="sell" min="0" value={price} required
-                        onChange={e=>SetPrice(e.target.value)}/><br/>
-                        <input type="submit" value="Sell"/>
-                    </form>) : null
+                    (
+                    <>
+                    <form onSubmit={handleSubmit}> 
+                    <div hidden={hidd}>
+                        {/*<label for="sell">Enter your price</label>*/}
+                        <input type="number" placeholder="enter your price" id="sell" name="sell"  min ="0" onBlur={()=>run()} required
+                        /><br/>
+                        <input type="submit" value="Complete sell"/>
+                    </div>  
+                    
+                    </form>
+                    
+                    
+                    <div  hidden={!hidd}><button onClick={()=>{SetHidd(false)}}>Sell</button></div>
+
+                    </>
+                    
+                    ) : null
                 
             }
 
@@ -156,12 +328,28 @@ function CancelSale(){
 
             {         
                 (props.buy==="1")?
-                    (<button>Buy</button>) : null
+                    (<div>
+                        <button id="processing" onClick={()=>BuyNFT()}>Buy</button>
+                        <button onClick={()=>history()}>+</button>
+                        <p>{props.price} HK</p>
+                        
+                        { 
+                              (!chart)?(
+                                <div>
+                                <Chart datas={chartDatas}/>
+                            </div>
+                            ): null
+                        }
+                                
+                          
+                       
+                    </div>
+                    
+                   
+                    ) : null
             }
                 
                 
-            
-
             </div>
             
         </div>
@@ -184,7 +372,7 @@ function NftsGallery(props){
         {
     (nftsOwnedIdsArray.length===0)?
     ((props.Discover==="0")?(<h3>You don't own any NFT</h3>):(<h3>No NFT on sale</h3>))
-    :<ShowGallery  buy={props.buy} sell={props.sell}/>}
+    :<ShowGallery Discover={props.Discover} buy={props.buy} sell={props.sell} currentprices={props.currentprices}/>}
 
             <p>
                 your wallet Id {walletId}
