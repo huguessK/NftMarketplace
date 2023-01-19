@@ -109,6 +109,7 @@ const ShowGallery=(props)=>{
             
              const currentprice=pricesArray[index]; 
              console.log("currentprice",currentprice);
+             console.log("pricearray",pricesArray);
        
         
          if(!(NftsOnsale.includes(principal)) && props.Discover==="0"){
@@ -152,11 +153,11 @@ const ShowGallery=(props)=>{
                 canisterId: nftPrincipal,
             });
         
-         let x = document.getElementById("sell");
+         let x = document.getElementById("sell"+(props.principal));
          let myprice = x.value; 
-
+         //alert("myprice x.value = " + " " + (myprice));
          NFTActor.SetCurrentPrice(parseFloat(myprice));
-         await NFTActor.UpdatePriceHistory(parseFloat(myprice)); //line to remove
+         await NFTActor.UpdatePriceHistory(parseFloat(myprice)); //line to remove -- already in function BuyNFT()
         }
 
         updateprice();
@@ -205,7 +206,7 @@ function history(){
 function BuyNFT(){
     async function Buy(){
         //Change Html inner text : Buy -> Processing
-        let innerText = document.getElementById("processing");
+        let innerText = document.getElementById("processing"+(props.principal));
         innerText.innerHTML="Processing...";
 
 
@@ -293,7 +294,8 @@ function BuyNFT(){
 
 
     return(
-        <div className="flex-container">
+        
+        <div className="container">
             <div className="nft">
                     <img src={props.image} alt={props.name} principal={props.principal}></img>
                     <h6>{props.name}</h6>
@@ -304,7 +306,7 @@ function BuyNFT(){
                     <form onSubmit={handleSubmit}> 
                     <div hidden={hidd}>
                         {/*<label for="sell">Enter your price</label>*/}
-                        <input type="number" placeholder="enter your price" id="sell" name="sell"  min ="0" onBlur={()=>run()} required
+                        <input type="number" placeholder="enter your price" id={"sell"+(props.principal)} name="sell"  min ="0" onBlur={()=>run()} required
                         /><br/>
                         <input type="submit" value="Complete sell"/>
                     </div>  
@@ -329,7 +331,7 @@ function BuyNFT(){
             {         
                 (props.buy==="1")?
                     (<div>
-                        <button id="processing" onClick={()=>BuyNFT()}>Buy</button>
+                        <button id={"processing"+(props.principal)} onClick={()=>BuyNFT()}>Buy</button>
                         <button onClick={()=>history()}>+</button>
                         <p>{props.price} HK</p>
                         
@@ -353,6 +355,7 @@ function BuyNFT(){
             </div>
             
         </div>
+        
     )
 }
 
@@ -368,16 +371,16 @@ function NftsGallery(props){
    
     return (
 
-        <>
+        <div className="Gallery">
         {
     (nftsOwnedIdsArray.length===0)?
     ((props.Discover==="0")?(<h3>You don't own any NFT</h3>):(<h3>No NFT on sale</h3>))
     :<ShowGallery Discover={props.Discover} buy={props.buy} sell={props.sell} currentprices={props.currentprices}/>}
 
-            <p>
+            <p id="walletId">
                 your wallet Id {walletId}
             </p>
-        </>
+        </div>
     
     );
 }

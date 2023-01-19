@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 
-import Header from "./Header";
 import Footer from "./Footer";
 
 
@@ -121,28 +120,31 @@ function WalletBody (){
 
 
     return (
-        <>
+        <div className="wallet-container">
+        <div className="content">
         <h1>Welcome to wallet body</h1>
         
             <div hidden = {displayNft}>
 
-            <button onClick={()=>Mint("",freenft,true)}>Mint free NFT</button>
+            <h6>Free mint</h6>
+            <button className="free-mint-button" style={{marginBottom :"20px"}} onClick={()=>Mint("",freenft,true)}>Mint free NFT</button>
 
             <form onSubmit={handleSubmit} >
             <div>
-                <label for="name">Enter a name : my nft #1</label>
-                <input type="text" id="nftname" name="name" value={nftName} required
+                <h6>Mint your own Nft</h6>
+                {/*<label for="name">"Enter a name : e.g. lion #1"</label>*/}
+                <input type="text" id="nftname" name="name" placeholder="Enter a name : e.g. lion #1" value={nftName} required
                 onChange={e=>SetNftName(e.target.value)}/><br/>
             </div>
 
             <div>
-                <label for="image">Select an image:</label>
+                {/*<label for="image">Select an image:</label>*/}
                 <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg, image/webp, image/gif" 
                 required onChange={e=>SetImage(e.target.files)}/><br/>
             </div>
 
             <div>
-            <input type="submit" value="Mint My NFT"/>
+            <input type="submit" value="Mint my NFT"/>
             </div>
         </form>
         </div>
@@ -158,7 +160,7 @@ function WalletBody (){
                 </div>
         
         <div>
-            <h1>Solde</h1>
+            <h1 style={{marginTop :"20px"}}>Balance</h1>
             <p>
                 Wallet Id {"2vxsx-fae"} {/*will be detected automatically with the integration of autenthification -- internet identity */}
             </p>
@@ -171,19 +173,17 @@ function WalletBody (){
             <button onClick={()=>Claim()}>Claim</button>
             <p hidden={response}>{message}</p>
         </div>
-        </>  
+        </div>
+        </div>
         
     )
 }
 
 
 
-
-
 function Wallet (){
     return (
         <>
-        <Header/>
         <WalletBody/>
         <Footer/>
         </>

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 
-import Header from "./Header";
 import Footer from "./Footer";
 
 
@@ -54,8 +53,7 @@ if (mynftIds === undefined) {
 return (
 
             <div>
-                <Header/>
-                <h1>Your nfts</h1>
+                {/*<h1>Your nfts</h1>*/}
                 <NftsGallery id={walletId} nftsOwnedIds={mynftIds} Discover={"0"}  buy={"0"} sell={"1"} currentprices={[]}/>
                 <Footer/>
             </div>

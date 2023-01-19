@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 
-import Header from "./Header";
+
 import Footer from "./Footer";
 import NftsGallery from "./NftsGallery";
 import {nft_backend} from "../../../declarations/nft_backend";
@@ -48,12 +48,13 @@ function DiscoverBody(){
              newpricesArray.push(currentprice);
         }
         
-        console.log("discover",newOwnedIdArray);
+        //console.log("discover",newOwnedIdArray);
+        //console.log("discoverpricearray",newpricesArray);
         SetMynftsIds(newOwnedIdArray);
         SetPriceArray(newpricesArray);
         SetWalletId("2vxsx-fae");
-        console.log(mynftIds);
-        console.log("end");
+        //console.log(mynftIds);
+        //console.log("end");
     }
     fe();
     
@@ -69,7 +70,7 @@ if (mynftIds === undefined) {
 return (
 
             <div>
-                <h1>Nfts on sale</h1>
+                {/*<h1>Nfts on sale</h1>*/}
                 <NftsGallery id={walletId} nftsOwnedIds={mynftIds} Discover={"1"} buy={"1"} sell={"0"} currentprices={pricesArray}/>
             </div>
         
@@ -81,7 +82,6 @@ return (
 function Discover (){
     return (
         <>
-        <Header/>
         <DiscoverBody/>
         <Footer/>
         </>

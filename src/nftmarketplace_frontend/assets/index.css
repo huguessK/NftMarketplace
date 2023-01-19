@@ -1,19 +1,59 @@
-body{
-    background-color: grey !important; /* choose another color */
+body #root{
+    background-color: grey !important; 
 }
+
+nav{
+  background-color: grey !important; 
+}
+
 
 .footer{
-    background-color: yellow; /* choose another color */
+    background-color: 	rgb(192,192,192); 
+      padding-bottom: 10px;
+      margin-top: 10px;
+      text-align: center;
+  
 }
 
 
-.flex-container {
-    display: flex;  /* delete at the end of the project */
+
+#navbarSupportedContent{
+  position: absolute;
+}
+#navbarSupportedContent ul{
+  position: relative;
+  border: 1px solid;
+  left: 1000px;
+}
+
+
+
+.container {
+    display: flex;  
     border: 1px solid;
   }
   
-  .flex-container > div {
+  .container > div {
     margin: 10px;
     padding: 20px;
     border: 1px solid;
   }
+
+  .nft img{
+    width : 100px;
+    height : 100px;
+  }
+
+  .Gallery #walletId{
+    text-align: center;
+  }
+
+  .wallet-container .content{
+    margin-left: auto;
+    margin-right: center;
+    text-align: center;
+  }
+
+#github{
+  color: black;
+}

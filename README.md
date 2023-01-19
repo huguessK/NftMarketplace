@@ -20,12 +20,12 @@ Each wallet will be able to claim 10,000 HK to be able to trade on the marketpla
 My progress on the projet :
 
 The project is almost finished, all the features are working.
-I need to integrate the authentication using Internet Identity and add the CSS to finish the project completely..... will be done in the next days.
+I need to integrate the authentication using Internet Identity to finish the project completely..... will be done in the next days.
 
 ---
 Technologies used for this project :
 - React.js 
-- Motoko language : to develop my decentralized application (internet computer blockchain)
+- Motoko language : to develop my decentralized application on the internet computer blockchain
 - Html, CSS
 - Vs Code as editor
 
