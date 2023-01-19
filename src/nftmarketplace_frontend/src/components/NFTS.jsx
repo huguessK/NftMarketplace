@@ -10,12 +10,13 @@ import {idlFactory} from "../../../declarations/nftmarketplace_backend";
 import {nftmarketplace_backend} from "../../../declarations/nftmarketplace_backend";
 import NftsGallery from "./NftsGallery";
 
+import {UserId} from "../index";
 
 
 function NFTS(){
 
     const [mynftIds, SetMynftsIds]=useState();
-    const [walletId, SetWalletId]=useState("2vxsx-fae");
+    const [walletId, SetWalletId]=useState(UserId);
 
 
 
@@ -24,7 +25,7 @@ function NFTS(){
 
     async function fe(){
 
-        const nftsOwnedIdsArray=await nftmarketplace_backend.getOwnedNfts(Principal.fromText("2vxsx-fae"));
+        const nftsOwnedIdsArray=await nftmarketplace_backend.getOwnedNfts(Principal.fromText(UserId));
         //console.log(nftsOwnedIdsArray);
         const newOwnedIdArray=[];
         for (const id of nftsOwnedIdsArray){
@@ -35,7 +36,7 @@ function NFTS(){
         console.log(newOwnedIdArray);
         SetMynftsIds(newOwnedIdArray);
 
-        SetWalletId("2vxsx-fae");
+        SetWalletId(UserId);
         console.log(mynftIds);
         console.log("end");
     }
@@ -51,12 +52,13 @@ if (mynftIds === undefined) {
 
 
 return (
-
-            <div>
+            <>
+            <div className="nfts">
                 {/*<h1>Your nfts</h1>*/}
                 <NftsGallery id={walletId} nftsOwnedIds={mynftIds} Discover={"0"}  buy={"0"} sell={"1"} currentprices={[]}/>
-                <Footer/>
             </div>
+             <Footer/>
+             </>
         
 )
 

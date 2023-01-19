@@ -12,6 +12,8 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(IDL.Principal)],
         ['query'],
       ),
+    'getSellerId' : IDL.Func([IDL.Principal], [IDL.Principal], ['query']),
+    'getWalletId' : IDL.Func([], [IDL.Principal], []),
     'mint' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat8), IDL.Bool], [], []),
     'nftTosell' : IDL.Func([IDL.Principal, IDL.Principal], [], []),
     'onSale' : IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),

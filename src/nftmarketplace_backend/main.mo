@@ -7,6 +7,7 @@ import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import List "mo:base/List";
 import Bool "mo:base/Bool";
+import Array "mo:base/Array";
 
 
 actor HuguesK{
@@ -102,6 +103,20 @@ public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, 
 
 
 
+public query func getSellerId(nftId : Principal) : async Principal {
+    Debug.print(debug_show("getSellerId"));
+    for (val in NftOwners.entries()){
+        let valPair : (Principal,Buffer.Buffer<Principal>) = val;
+        let array : [Principal] = Buffer.toArray(valPair.1);
+        let find = Array.find<Principal>(array, func x = x == nftId);
+        if(find!=null){return valPair.0};
+    };
+
+    return Principal.fromText("2vxsx-fae");
+
+};
+
+
 public query func getOwnedNfts (owner : Principal) : async [Principal] {
     
     switch (NftOwners.get(owner)) {
@@ -157,6 +172,9 @@ public func cancelSale(nftPrincipal : Principal) : async (){
 };
 
 
+public shared(msg) func getWalletId() : async Principal{
+    return msg.caller;
+};
 
 
 

@@ -11,11 +11,14 @@ import {nftmarketplace_backend} from "../../../declarations/nftmarketplace_backe
 import {Actor, HttpAgent} from "@dfinity/agent";
 import {idlFactory} from "../../../declarations/nft_backend";
 
+import {UserId} from "../index";
+
+
 function DiscoverBody(){
 
     const [mynftIds, SetMynftsIds]=useState();
     const [pricesArray,  SetPriceArray]=useState();
-    const [walletId, SetWalletId]=useState("2vxsx-fae");
+    const [walletId, SetWalletId]=useState(UserId);
    
 
  useEffect(()=>{
@@ -52,7 +55,7 @@ function DiscoverBody(){
         //console.log("discoverpricearray",newpricesArray);
         SetMynftsIds(newOwnedIdArray);
         SetPriceArray(newpricesArray);
-        SetWalletId("2vxsx-fae");
+        SetWalletId(UserId);
         //console.log(mynftIds);
         //console.log("end");
     }
@@ -82,7 +85,9 @@ return (
 function Discover (){
     return (
         <>
+        <div className="discover">
         <DiscoverBody/>
+        </div>
         <Footer/>
         </>
     )

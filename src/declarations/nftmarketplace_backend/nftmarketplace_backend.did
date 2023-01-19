@@ -3,6 +3,8 @@ service : {
   FreeMintCount: () -> (nat8) query;
   cancelSale: (principal) -> ();
   getOwnedNfts: (principal) -> (vec principal) query;
+  getSellerId: (principal) -> (principal) query;
+  getWalletId: () -> (principal);
   mint: (text, vec nat8, bool) -> ();
   nftTosell: (principal, principal) -> ();
   onSale: () -> (vec principal) query;

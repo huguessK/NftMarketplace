@@ -11,6 +11,8 @@ import {nftmarketplace_backend} from "../../../declarations/nftmarketplace_backe
 
 import Chart from "./Chart";
 
+import {UserId} from "../index";
+
 let nftsOwnedIdsArray=[];
 let walletId="";
 
@@ -209,12 +211,15 @@ function BuyNFT(){
         let innerText = document.getElementById("processing"+(props.principal));
         innerText.innerHTML="Processing...";
 
+        const getsellerId = await nftmarketplace_backend.getSellerId(props.principal); //return a principal
+        
+        let seller_id_text = getsellerId.toText();
+        alert("seller_id" +" "+(seller_id_text));
+        let buyer_id_text = UserId;
 
-        let seller_id_text = "2vxsx-fae";
-        let buyer_id_text = "2vxsx-fae";
-
-        let seller = Principal.fromText("2vxsx-fae");
-        let buyer = Principal.fromText("2vxsx-fae");
+        let seller = getsellerId;
+        let buyer = Principal.fromText(UserId);
+        
 
         let nftPrincipal = Principal.fromText(props.principal);
             const localHost = "http://localhost:8080/";
@@ -279,7 +284,7 @@ function BuyNFT(){
         async function sell(){
             let nftPrincipal = Principal.fromText(props.principal);
             //alert(props.principal);
-            await nftmarketplace_backend.nftTosell(Principal.fromText("2vxsx-fae"), nftPrincipal);
+            await nftmarketplace_backend.nftTosell(Principal.fromText(UserId), nftPrincipal);
             NftsOnsale.push(props.principal);
             //alert("nft on sale");
             

@@ -57,3 +57,7 @@ nav{
 #github{
   color: black;
 }
+
+.discover, .nfts, .wallet{
+  min-height: 400px;
+}

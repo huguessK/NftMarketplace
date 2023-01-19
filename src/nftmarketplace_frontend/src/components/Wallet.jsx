@@ -11,7 +11,7 @@ import NftsGallery from "./NftsGallery";
 
 import {token_backend} from "../../../declarations/token_backend";
 
-
+import {UserId} from "../index";
 
 
 const freenft =
@@ -57,7 +57,7 @@ function WalletBody (){
     const [message, SetMessage]=useState("");
 
     async function Claim(){
-        const rep =  await token_backend.Claim("2vxsx-fae");
+        const rep =  await token_backend.Claim(UserId);
         if(rep!="SuccessfulTransaction"){
             SetResponse(false);
             SetMessage(rep);
@@ -71,10 +71,10 @@ function WalletBody (){
     useEffect(()=>{
      
         async function getBalance(walletId){
-            const balance = await token_backend.Mybalance("2vxsx-fae");
+            const balance = await token_backend.Mybalance(UserId);
             SetBalance(balance);
         }
-        getBalance("2vxsx-fae");
+        getBalance(UserId);
     },[]);
 
 
@@ -162,7 +162,7 @@ function WalletBody (){
         <div>
             <h1 style={{marginTop :"20px"}}>Balance</h1>
             <p>
-                Wallet Id {"2vxsx-fae"} {/*will be detected automatically with the integration of autenthification -- internet identity */}
+                Wallet Id {UserId} {/*will be detected automatically with the integration of autenthification -- internet identity */}
             </p>
 
             <p>Balance = {balance} HK</p>
@@ -184,7 +184,9 @@ function WalletBody (){
 function Wallet (){
     return (
         <>
+        <div className="wallet">
         <WalletBody/>
+        </div>
         <Footer/>
         </>
     )

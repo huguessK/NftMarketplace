@@ -6,6 +6,8 @@ export interface _SERVICE {
   'FreeMintCount' : ActorMethod<[], number>,
   'cancelSale' : ActorMethod<[Principal], undefined>,
   'getOwnedNfts' : ActorMethod<[Principal], Array<Principal>>,
+  'getSellerId' : ActorMethod<[Principal], Principal>,
+  'getWalletId' : ActorMethod<[], Principal>,
   'mint' : ActorMethod<[string, Uint8Array, boolean], undefined>,
   'nftTosell' : ActorMethod<[Principal, Principal], undefined>,
   'onSale' : ActorMethod<[], Array<Principal>>,
