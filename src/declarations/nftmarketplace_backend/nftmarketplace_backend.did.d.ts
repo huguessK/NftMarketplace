@@ -8,7 +8,7 @@ export interface _SERVICE {
   'getOwnedNfts' : ActorMethod<[Principal], Array<Principal>>,
   'getSellerId' : ActorMethod<[Principal], Principal>,
   'getWalletId' : ActorMethod<[], Principal>,
-  'mint' : ActorMethod<[string, Uint8Array, boolean], undefined>,
+  'mint' : ActorMethod<[string, Uint8Array, boolean, Principal], undefined>,
   'nftTosell' : ActorMethod<[Principal, Principal], undefined>,
   'onSale' : ActorMethod<[], Array<Principal>>,
 }

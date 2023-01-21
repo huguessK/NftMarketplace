@@ -6,9 +6,11 @@
     <meta name="keywords" content="web3, nft, blockchain, internet computer, ICP, motoko language" />
     <meta name="author" content="Hugues Kouakou" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>HuguesK nft marketplace</title>
+    <title>HuguesK</title>
 
-    <link rel="icon" href="ecom.ico" />
+    <base href="/"> 
+
+    <link rel="icon" href="logo.png" />
     <!--icon to be added when the project is done-->
     <link rel="stylesheet" href="index.css" />
 
@@ -40,25 +42,66 @@
   </head>
   
   <body>
-    <nav class="navbar navbar-expand-lg">
-
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <a class="navbar-brand" href="##"><span>HuguesK</span><i class="bi bi-amd" style="font-size: 1.5rem;" ></i></a>
       <div class="container-fluid">
-        <a class="navbar-brand" href="##"><span>HuguesK</span><i class="bi bi-amd" style="font-size: 1.5rem;" ></i></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
 
-            <ul  class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto">
-                <li class="nav-item"><a class="nav-link active" href="/discover">Discover</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/wallet">Wallet</a></li>
-                <li class="nav-item"><a class="nav-link active" href="/viewnfts">My Nfts</a></li>
+            <ul  class="navbar-nav">
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Discover
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/discover/wallet1">Fake wallet 1</a></li>
+                  <li><a class="dropdown-item" href="/discover/wallet2">Fake wallet 2</a></li>
+                  <li><a class="dropdown-item" href="/discover/wallet">My wallet</a></li>
+                </ul>
+              </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Wallet
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/wallet/wallet1">Fake wallet 1</a></li>
+                    <li><a class="dropdown-item" href="/wallet/wallet2">Fake wallet 2</a></li>
+                    <li><a class="dropdown-item" href="/wallet/wallet">My wallet</a></li>
+                  </ul>
+                </li>
+
+
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      My nfts
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="/viewnfts/wallet1">Fake wallet 1</a></li>
+                      <li><a class="dropdown-item" href="/viewnfts/wallet2">Fake wallet 2</a></li>
+                      <li><a class="dropdown-item" href="/viewnfts/wallet">My wallet</a></li>
+                    </ul>
+                  </li>
+
+                  
             </ul>
           </div>
         </div>
     </nav>
-
+    
+    <p id="id" hidden={true}>2vxsx-fae</p>
     <div id="root"></div>
+
+
+    <script>
+      function setWaletId(walletId){
+        document.getElementById("id").innerHTML = walletId;
+      }
+      </script>
 
     <!-- Bootstrap Js-->
     <script

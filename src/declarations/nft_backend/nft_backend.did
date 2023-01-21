@@ -2,6 +2,7 @@ type NFT =
  service {
    GetCurrentPrice: () -> (float64) query;
    GetDatas: (principal) -> (vec nat8) query;
+   GetDatasLA: () -> (vec nat8) query;
    GetID: () -> (principal) query;
    GetName: (principal) -> (text) query;
    PriceHistoryArray: () -> (vec float64);

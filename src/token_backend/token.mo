@@ -20,29 +20,24 @@ stable var balancesEntries : [(Principal, Float)]=[];
 //can not be accessed outside of this actor
 private stable var TotalSupply : Float = 1000000;
 
-//constants : don't know for the moment if these constants will be useful to me
-let TokenName : Text = "HuKou";
-let TokenSymbol : Text = "HK";
 
 //use of hashmap to store each principal ("wallet") balance
 var balances= HashMap.HashMap<Principal,Float>(1, Principal.equal, Principal.hash);
 
 //return asynchronously a given principal ("wallet") balance
 //be sure that 'id' equal to the one provided by the system when calling this function ~ Security
+// public shared(msg) func Mybalance(id : Text) : async Float
 public shared(msg) func Mybalance(id : Text) : async Float{
      let principal : Principal = Principal.fromText(id);
-    if(msg.caller == principal)
-    {
+    
             switch (balances.get(principal)) {
             case null {
                 return 0;
             };
             case (?mybalance) {return  mybalance};
             }
-    }
-    else{
-        return -1;
-    }
+    
+    
 };
 
 
@@ -54,7 +49,9 @@ public func UpdateBalance(id : Text, amount: Float) : async() {
     
              switch (balances.get(principal)) 
              {
-                case null {};
+                case null {
+                     balances.put(principal, amount);
+                };
                 case (?mybalance) {
                     balances.put(principal, mybalance+amount);
                 };
@@ -65,10 +62,10 @@ public func UpdateBalance(id : Text, amount: Float) : async() {
 
 //to transfer tokens from a wallet to another one
 //amount >0
-public shared(msg) func Transfer(from : Text, to: Text, amount: Float) : async Text {
+public func Transfer(from : Text, to: Text, amount: Float) : async Text {
     let fromprincipal : Principal = Principal.fromText(from);
     let toprincipal : Principal = Principal.fromText(to);
-    if(msg.caller==fromprincipal and fromprincipal!=toprincipal){
+    if(fromprincipal!=toprincipal){
             switch (balances.get(fromprincipal)) {
             case null {return "WalletNotFound"};
             case (?mybalance) {
@@ -91,12 +88,12 @@ public shared(msg) func Transfer(from : Text, to: Text, amount: Float) : async T
 };
 
 //function to call when a wallet claim its 10,000 HK (possibility to claim once)
-public shared(msg) func Claim (id : Text) : async Text 
+public func Claim (id : Text) : async Text 
 {
     let principal : Principal = Principal.fromText(id);
-    Debug.print(debug_show(msg.caller));
-    if(msg.caller==principal)
-    {
+    //Debug.print(debug_show(msg.caller)); --not a shared function in order to test the project using the fake wallets I created
+    
+    
             switch (balances.get(principal)) 
             {
                     case null 
@@ -113,9 +110,8 @@ public shared(msg) func Claim (id : Text) : async Text
                         return "AlreadyClaimed"
                     };
             }
-    }
+    
 
-else{return "UnauthorizedOperation"}
 
 };
 

@@ -30,15 +30,15 @@ function NFTS(){
         const newOwnedIdArray=[];
         for (const id of nftsOwnedIdsArray){
             newOwnedIdArray.push(id.toText());
-            console.log("id",id.toText());
+            //console.log("id",id.toText());
         }
         
-        console.log(newOwnedIdArray);
+        //console.log(newOwnedIdArray);
         SetMynftsIds(newOwnedIdArray);
 
         SetWalletId(UserId);
-        console.log(mynftIds);
-        console.log("end");
+        //console.log(mynftIds);
+        //console.log("end");
     }
     fe();
     
@@ -55,7 +55,7 @@ return (
             <>
             <div className="nfts">
                 {/*<h1>Your nfts</h1>*/}
-                <NftsGallery id={walletId} nftsOwnedIds={mynftIds} Discover={"0"}  buy={"0"} sell={"1"} currentprices={[]}/>
+                <NftsGallery id={walletId} nftsOwnedIds={mynftIds} Discover={"0"}  buy={"0"} sell={"1"} currentprices={[]} sellerArray={[]}/>
             </div>
              <Footer/>
              </>

@@ -1,0 +1,14 @@
+{
+  "nft_backend": {
+    "ic": "mbagd-wqaaa-aaaag-qbq7a-cai"
+  },
+  "nftmarketplace_backend": {
+    "ic": "midn7-ayaaa-aaaag-qbq6q-cai"
+  },
+  "nftmarketplace_frontend": {
+    "ic": "mgbax-3iaaa-aaaag-qbq7q-cai"
+  },
+  "token_backend": {
+    "ic": "mpcll-naaaa-aaaag-qbq6a-cai"
+  }
+}

@@ -14,7 +14,11 @@ export const idlFactory = ({ IDL }) => {
       ),
     'getSellerId' : IDL.Func([IDL.Principal], [IDL.Principal], ['query']),
     'getWalletId' : IDL.Func([], [IDL.Principal], []),
-    'mint' : IDL.Func([IDL.Text, IDL.Vec(IDL.Nat8), IDL.Bool], [], []),
+    'mint' : IDL.Func(
+        [IDL.Text, IDL.Vec(IDL.Nat8), IDL.Bool, IDL.Principal],
+        [],
+        [],
+      ),
     'nftTosell' : IDL.Func([IDL.Principal, IDL.Principal], [], []),
     'onSale' : IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),
   });

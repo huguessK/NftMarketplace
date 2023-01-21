@@ -16,18 +16,6 @@ nav{
 }
 
 
-
-#navbarSupportedContent{
-  position: absolute;
-}
-#navbarSupportedContent ul{
-  position: relative;
-  border: 1px solid;
-  left: 1000px;
-}
-
-
-
 .container {
     display: flex;  
     border: 1px solid;
@@ -40,8 +28,8 @@ nav{
   }
 
   .nft img{
-    width : 100px;
-    height : 100px;
+    width : 200px;
+    height : 200px;
   }
 
   .Gallery #walletId{

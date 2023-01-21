@@ -5,7 +5,7 @@ service : {
   getOwnedNfts: (principal) -> (vec principal) query;
   getSellerId: (principal) -> (principal) query;
   getWalletId: () -> (principal);
-  mint: (text, vec nat8, bool) -> ();
+  mint: (text, vec nat8, bool, principal) -> ();
   nftTosell: (principal, principal) -> ();
   onSale: () -> (vec principal) query;
 }

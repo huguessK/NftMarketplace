@@ -24,6 +24,12 @@ public query func GetDatas(nftId: Principal) : async [Nat8]{
     
 };
 
+
+public query func GetDatasLA() : async [Nat8]{
+        return datas;
+};
+
+
 public query func GetID() : async Principal {
     return Principal.fromActor(this);
 };

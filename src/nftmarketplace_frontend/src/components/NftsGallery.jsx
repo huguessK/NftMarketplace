@@ -25,7 +25,10 @@ const ShowGallery=(props)=>{
     const datas =[];
 
     const [pricesArray, SetP] = useState();
+
     const promises = props.currentprices; //the selling price of nfts on the marketplae
+    const sellerArray = props.sellerArray;
+    
 
     useEffect(()=>{
    
@@ -33,6 +36,7 @@ const ShowGallery=(props)=>{
         SetP(values.reverse());
         //console.log("pricearray",pricesArray);
       });
+
     },[promises]);
 
     
@@ -47,7 +51,7 @@ const ShowGallery=(props)=>{
             SetNftOnsale(newarray);
         }
     getNftOnsales();
-    console.log("onsales",NftsOnsale);
+    //console.log("onsales",NftsOnsale);
     },[]);
 
 
@@ -66,7 +70,8 @@ const ShowGallery=(props)=>{
              const localHost = "http://localhost:8080/";
              //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
              const id = Principal.fromText(principalID); 
-             const agent = new HttpAgent ({host: localHost});
+             //const agent = new HttpAgent ({host: localHost});
+             const agent = new HttpAgent();
              const NFTActor = await Actor.createActor(idlFactory,{
                  agent,
                  canisterId: id,
@@ -110,19 +115,27 @@ const ShowGallery=(props)=>{
              const principal = NftDatas.principal;
             
              const currentprice=pricesArray[index]; 
-             console.log("currentprice",currentprice);
-             console.log("pricearray",pricesArray);
+             //console.log("currentprice",currentprice);
+             //console.log("pricearray",pricesArray);
+             console.log(principal);
+        
+             const seller_id_text = sellerArray[index];
        
         
          if(!(NftsOnsale.includes(principal)) && props.Discover==="0"){
-         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy={props.buy} sell={props.sell} price="NULL"/>);
+                return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy={props.buy} sell={props.sell} price="NULL" seller={""}/>);
          }
 
          else if((NftsOnsale.includes(principal)) && props.Discover==="0"){
-         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="2" sell={props.sell} price="NULL"/>);
+                 return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="2" sell={props.sell} price="NULL" seller={""}/>);
          }
          else{
-         return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="1" sell={props.sell} price={currentprice}/>);
+            if(seller_id_text==UserId){
+                return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy={"3"} sell={props.sell} price={currentprice} seller={""}/>);
+            }
+            else{
+             return( <NFTImage key={index} image={nft_image} name={name} principal={principal} buy="1" sell={props.sell} price={currentprice} seller={seller_id_text}/>);
+            }
          }
         
      })
@@ -148,7 +161,7 @@ const ShowGallery=(props)=>{
             const localHost = "http://localhost:8080/";
             //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
             //const id = Principal.fromText(principalID); 
-            const agent = new HttpAgent ({host: localHost});
+            const agent = new HttpAgent();
            
             const NFTActor = await Actor.createActor(idlFactory,{
                 agent,
@@ -159,7 +172,7 @@ const ShowGallery=(props)=>{
          let myprice = x.value; 
          //alert("myprice x.value = " + " " + (myprice));
          NFTActor.SetCurrentPrice(parseFloat(myprice));
-         await NFTActor.UpdatePriceHistory(parseFloat(myprice)); //line to remove -- already in function BuyNFT()
+         //await NFTActor.UpdatePriceHistory(parseFloat(myprice)); //line to remove -- already in function BuyNFT()
         }
 
         updateprice();
@@ -186,7 +199,7 @@ function history(){
             const localHost = "http://localhost:8080/";
              //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
              //const id = Principal.fromText(principalID); 
-             const agent = new HttpAgent ({host: localHost});
+             const agent = new HttpAgent();
              agent.fetchRootKey();
              const NFTActor = await Actor.createActor(idlFactory,{
                  agent,
@@ -207,25 +220,26 @@ function history(){
 
 function BuyNFT(){
     async function Buy(){
+        let nftPrincipal = Principal.fromText(props.principal);
         //Change Html inner text : Buy -> Processing
         let innerText = document.getElementById("processing"+(props.principal));
         innerText.innerHTML="Processing...";
 
-        const getsellerId = await nftmarketplace_backend.getSellerId(props.principal); //return a principal
+        const getsellerId = await nftmarketplace_backend.getSellerId(nftPrincipal); //return a principal
         
         let seller_id_text = getsellerId.toText();
-        alert("seller_id" +" "+(seller_id_text));
+        //alert("seller_id" +" "+(seller_id_text));
         let buyer_id_text = UserId;
 
         let seller = getsellerId;
         let buyer = Principal.fromText(UserId);
         
 
-        let nftPrincipal = Principal.fromText(props.principal);
+        
             const localHost = "http://localhost:8080/";
              //nft_backend canister ID -> 'dfx canister id nft_backend' in the terminal
              //const id = Principal.fromText(principalID); 
-             const agent = new HttpAgent ({host: localHost});
+             const agent = new HttpAgent();
              const NFTActor = await Actor.createActor(idlFactory,{
                  agent,
                  canisterId: nftPrincipal,
@@ -243,7 +257,7 @@ function BuyNFT(){
                 await token_backend.UpdateBalance(seller_id_text, nftprice);
                 await token_backend.UpdateBalance(buyer_id_text, -nftprice);
                 
-                const agent = new HttpAgent ({host: localHost});
+                const agent = new HttpAgent();
                 agent.fetchRootKey();
                 const NFTActor = await Actor.createActor(idlFactory,{
                     agent,
@@ -337,8 +351,9 @@ function BuyNFT(){
                 (props.buy==="1")?
                     (<div>
                         <button id={"processing"+(props.principal)} onClick={()=>BuyNFT()}>Buy</button>
-                        <button onClick={()=>history()}>+</button>
+                        <button onClick={()=>history()}>Price History</button>
                         <p>{props.price} HK</p>
+                        <p>Owner {props.seller}</p>
                         
                         { 
                               (!chart)?(
@@ -356,6 +371,30 @@ function BuyNFT(){
                     ) : null
             }
                 
+            
+                {         
+                (props.buy==="3")?
+                    (<div>
+                        <button onClick={()=>CancelSale()}>Cancel sale</button>
+                        <button onClick={()=>history()}>Price History</button>
+                        <p>{props.price} HK</p>
+                        <p>Owner {props.seller}</p>
+                        
+                        { 
+                              (!chart)?(
+                                <div>
+                                <Chart datas={chartDatas}/>
+                            </div>
+                            ): null
+                        }
+                                
+                          
+                       
+                    </div>
+                    
+                   
+                    ) : null
+            }
                 
             </div>
             
@@ -368,7 +407,7 @@ function BuyNFT(){
 
 function NftsGallery(props){
     nftsOwnedIdsArray = props.nftsOwnedIds;
-   
+    const sellers = props.sellerArray;
     
     //const walletId = Principal.fromText(props.id);
     walletId = props.id;
@@ -380,7 +419,7 @@ function NftsGallery(props){
         {
     (nftsOwnedIdsArray.length===0)?
     ((props.Discover==="0")?(<h3>You don't own any NFT</h3>):(<h3>No NFT on sale</h3>))
-    :<ShowGallery Discover={props.Discover} buy={props.buy} sell={props.sell} currentprices={props.currentprices}/>}
+    :<ShowGallery Discover={props.Discover} buy={props.buy} sell={props.sell} currentprices={props.currentprices} sellerArray={sellers}/>}
 
             <p id="walletId">
                 your wallet Id {walletId}

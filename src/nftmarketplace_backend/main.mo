@@ -27,8 +27,8 @@ stable var NftsToSellEntries : [Principal] = [];
 stable var NftOwnersEntries : List.List<(Principal,List.List<Principal>)> = List.nil<(Principal,List.List<Principal>)>();//empty List
 
 
-public shared(msg) func mint(name: Text, datas: [Nat8], freemint : Bool) : async () {
-    let owner : Principal = msg.caller;
+public func mint(name: Text, datas: [Nat8], freemint : Bool, owner : Principal) : async () {
+    //let owner : Principal = msg.caller;
     Debug.print(debug_show(owner));
 
     Debug.print(debug_show(Cycles.balance()));
@@ -88,14 +88,15 @@ public func BuyNft(nftPrincipal : Principal, price : Float, seller : Principal, 
                                     for (nftprincipal in buyernfts.vals()){
                                         buyernftsBuffer.add(nftprincipal);
                                     };
-                                    //Insert the value v at key k. Overwrites an existing entry with key k
-                                    NftOwners.put(buyer, buyernftsBuffer);
+                                    
                                     }
                                 
                                 }
                             };
                     };
                 NftOwners.put(seller, newBuffer);
+                //Insert the value v at key k. Overwrites an existing entry with key k
+                NftOwners.put(buyer, buyernftsBuffer);
              };
         };
     return price; //in order to Update nft price history
