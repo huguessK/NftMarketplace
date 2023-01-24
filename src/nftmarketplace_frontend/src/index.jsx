@@ -45,18 +45,17 @@ export default function App() {
 const runApp = async () => {
 	const authClient = await AuthClient.create();
 	if(await authClient.isAuthenticated()){
-		//UserId="2vxsx-fae";
+		//UserId=principal id associated to my device
 		UserId = await nftmarketplace_backend.getWalletId();
 		UserId = UserId.toText();
 		let currentLocation = window.location.href;
-		//if Fake wallet 1
+		//if 'Fake' wallet 1 link is clicked
 		if(currentLocation.includes("wallet1")) {UserId="hozae-racaq-aaaaa-aaaaa-c";}
-		//if Fake wallet 2
-		else if(currentLocation.includes("wallet2")) {UserId="midn7-ayaaa-aaaag-qbq6q-cai";}
-		//if my wallet -> caller principal id associated to my device
-		else{
-			UserId="2vxsx-fae";
-		}
+		//if 'Fake' wallet 2 link is clicked
+		if(currentLocation.includes("wallet2")) {UserId="midn7-ayaaa-aaaag-qbq6q-cai";}
+		//else
+			//UserId = Id associated to my device -- this one is my real wallet
+		
 		//alert("current Wallet" + " " + (UserId));
 		handleAuthenticated(authClient);
 	} else{
@@ -64,7 +63,7 @@ const runApp = async () => {
 		await authClient.login({
 			identityProvider: "https://identity.ic0.app/#authorize",
 			onSuccess: async ()=>{
-				//UserId="2vxsx-fae";
+				//UserId=principal id associated to my device
 				UserId = await nftmarketplace_backend.getWalletId();
 				UserId = UserId.toText();
 				handleAuthenticated(authClient);
